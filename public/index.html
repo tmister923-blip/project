@@ -1,0 +1,699 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>DarDish - Video Chat</title>
+        <link rel="stylesheet" href="css/style.css" />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap"
+            rel="stylesheet"
+        />
+    </head>
+    <body>
+        <!-- Username Entry Screen -->
+        <div id="username-screen" class="screen active">
+            <div class="container">
+                <div class="brand-container">
+                    <h1 class="brand-title">
+                        <span class="letter">D</span>
+                        <span class="letter">a</span>
+                        <span class="letter">r</span>
+                        <span class="letter">D</span>
+                        <span class="letter">i</span>
+                        <span class="letter">s</span>
+                        <span class="letter">h</span>
+                    </h1>
+                    <p class="brand-subtitle">
+                        Connect with strangers worldwide
+                    </p>
+                </div>
+                <div class="username-form">
+                    <input
+                        type="text"
+                        id="username-input"
+                        placeholder="Enter your username"
+                        maxlength="20"
+                    />
+                    <button id="start-btn" onclick="startChat()">
+                        Start Chatting
+                    </button>
+                </div>
+                <div class="user-stats">
+                    <div class="online-users">
+                        <span class="users-icon">👥</span>
+                        <span id="user-count">0</span> users online
+                    </div>
+                    <div
+                        class="user-location"
+                        id="user-location"
+                        style="display: none"
+                    >
+                        <span id="user-flag">🌍</span>
+                        <span id="user-country">Unknown</span>
+                    </div>
+                </div>
+                <p class="disclaimer">
+                    You will be connected with random strangers. Please be
+                    respectful.
+                </p>
+            </div>
+        </div>
+
+        <!-- Main Chat Screen -->
+        <div id="chat-screen" class="screen">
+            <!-- Mini Brand in Chat Screen -->
+            <div class="mini-brand-container">
+                <span class="mini-brand">DarDish</span>
+            </div>
+            <div class="video-container">
+                <!-- Partner's video -->
+                <div class="video-wrapper partner-video">
+                    <video id="partner-video" autoplay playsinline></video>
+                    <div class="video-overlay">
+                        <div class="username-with-country">
+                            <span class="username" id="partner-username"
+                                >Connecting...</span
+                            >
+                            <span
+                                class="user-country-info"
+                                id="partner-country-info"
+                                style="display: none"
+                            ></span>
+                        </div>
+                        <div class="connection-status" id="connection-status">
+                            <div class="spinner"></div>
+                            <span>Searching for someone...</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- User's video -->
+                <div class="video-wrapper user-video">
+                    <video id="user-video" autoplay playsinline muted></video>
+                    <div class="video-overlay">
+                        <div class="username-with-country">
+                            <span class="username" id="user-username">You</span>
+                            <span
+                                class="user-country-info"
+                                id="user-country-info"
+                                style="display: none"
+                            ></span>
+                        </div>
+                        <button
+                            id="flip-camera"
+                            class="flip-camera-btn"
+                            title="Flip Camera"
+                        >
+                            <svg
+                                width="20"
+                                height="20"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                            >
+                                <path
+                                    d="M12 2L13.09 4.26L15.5 3L14.77 5.76L17.5 5.24L16.25 8.04L19 8L17.24 10.5L19.76 11.5L16.76 13.09L18 16L15.26 14.91L16 17.5L13.24 16.25L12.76 19L10.5 17.24L9.5 19.76L7.91 16.76L5 18L6.09 15.26L3.5 16L4.25 13.24L1.5 12.76L3.26 10.5L1 9L3.76 8.04L2.5 5.24L5.24 5.76L4.5 3L6.91 4.26L8 2L9.5 4.24L12 2Z"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                    fill="none"
+                                />
+                                <circle
+                                    cx="12"
+                                    cy="12"
+                                    r="3"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                    fill="none"
+                                />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Controls -->
+            <div class="controls">
+                <button
+                    id="toggle-video"
+                    class="control-btn video-on"
+                    title="Toggle Video"
+                >
+                    <svg
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                    >
+                        <path
+                            d="M23 7l-7 5 7 5V7z"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        />
+                        <rect
+                            x="1"
+                            y="5"
+                            width="15"
+                            height="14"
+                            rx="2"
+                            ry="2"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        />
+                    </svg>
+                </button>
+
+                <button
+                    id="toggle-audio"
+                    class="control-btn audio-on"
+                    title="Toggle Audio"
+                >
+                    <svg
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                    >
+                        <path
+                            d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        />
+                        <path
+                            d="M19 10v2a7 7 0 0 1-14 0v-2"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        />
+                        <line
+                            x1="12"
+                            y1="19"
+                            x2="12"
+                            y2="23"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                        />
+                        <line
+                            x1="8"
+                            y1="23"
+                            x2="16"
+                            y2="23"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                        />
+                    </svg>
+                </button>
+
+                <button
+                    id="rotate-camera"
+                    class="control-btn rotate"
+                    title="Rotate Camera"
+                >
+                    <svg
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                    >
+                        <path
+                            d="M1 4v6h6"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        />
+                        <path
+                            d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        />
+                    </svg>
+                </button>
+
+                <button
+                    id="filters-btn"
+                    class="control-btn filters"
+                    title="Camera Filters"
+                >
+                    <svg
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                    >
+                        <circle
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            stroke-width="2"
+                        />
+                        <path
+                            d="M8 12l2 2 4-4"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                        />
+                    </svg>
+                </button>
+
+                <button
+                    id="mic-select-btn"
+                    class="control-btn mic-select"
+                    title="Select Microphone"
+                >
+                    <svg
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                    >
+                        <path
+                            d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"
+                            stroke="currentColor"
+                            stroke-width="2"
+                        />
+                        <path
+                            d="M19 10v2a7 7 0 0 1-14 0v-2"
+                            stroke="currentColor"
+                            stroke-width="2"
+                        />
+                        <line
+                            x1="12"
+                            y1="19"
+                            x2="12"
+                            y2="23"
+                            stroke="currentColor"
+                            stroke-width="2"
+                        />
+                        <line
+                            x1="8"
+                            y1="23"
+                            x2="16"
+                            y2="23"
+                            stroke="currentColor"
+                            stroke-width="2"
+                        />
+                        <polygon
+                            points="15,8 18,8 16.5,6"
+                            stroke="currentColor"
+                            stroke-width="1"
+                            fill="currentColor"
+                        />
+                    </svg>
+                </button>
+
+                <button
+                    id="skip-btn"
+                    class="control-btn skip"
+                    title="Skip to Next Person"
+                >
+                    <svg
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                    >
+                        <polygon
+                            points="5,4 15,12 5,20"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            fill="currentColor"
+                        />
+                        <line
+                            x1="19"
+                            y1="5"
+                            x2="19"
+                            y2="19"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                        />
+                    </svg>
+                </button>
+
+                <button
+                    id="stop-btn"
+                    class="control-btn stop"
+                    title="Stop Chat"
+                >
+                    <svg
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                    >
+                        <rect
+                            x="3"
+                            y="3"
+                            width="18"
+                            height="18"
+                            rx="2"
+                            ry="2"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            fill="currentColor"
+                        />
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Chat Messages -->
+            <div class="chat-panel" id="chat-panel">
+                <div class="chat-messages" id="chat-messages"></div>
+                <div class="chat-input-container">
+                    <input
+                        type="text"
+                        id="chat-input"
+                        placeholder="Type a message... 😊"
+                        maxlength="200"
+                    />
+                    <button id="emoji-btn" title="Emoji">😊</button>
+                    <button id="send-btn">Send</button>
+                </div>
+
+                <!-- Emoji Picker -->
+                <div id="emoji-picker" class="emoji-picker hidden">
+                    <div class="emoji-categories">
+                        <button
+                            class="emoji-category active"
+                            data-category="smileys"
+                        >
+                            😊
+                        </button>
+                        <button class="emoji-category" data-category="gestures">
+                            👋
+                        </button>
+                        <button class="emoji-category" data-category="objects">
+                            ⚽
+                        </button>
+                        <button class="emoji-category" data-category="flags">
+                            🏳️
+                        </button>
+                    </div>
+                    <div class="emoji-grid">
+                        <span class="emoji-item">😀</span>
+                        <span class="emoji-item">😃</span>
+                        <span class="emoji-item">😄</span>
+                        <span class="emoji-item">😁</span>
+                        <span class="emoji-item">😆</span>
+                        <span class="emoji-item">😅</span>
+                        <span class="emoji-item">😂</span>
+                        <span class="emoji-item">🤣</span>
+                        <span class="emoji-item">😊</span>
+                        <span class="emoji-item">😇</span>
+                        <span class="emoji-item">🙂</span>
+                        <span class="emoji-item">🙃</span>
+                        <span class="emoji-item">😉</span>
+                        <span class="emoji-item">😌</span>
+                        <span class="emoji-item">😍</span>
+                        <span class="emoji-item">🥰</span>
+                        <span class="emoji-item">😘</span>
+                        <span class="emoji-item">😗</span>
+                        <span class="emoji-item">😙</span>
+                        <span class="emoji-item">😚</span>
+                        <span class="emoji-item">😋</span>
+                        <span class="emoji-item">😛</span>
+                        <span class="emoji-item">😝</span>
+                        <span class="emoji-item">😜</span>
+                        <span class="emoji-item">🤪</span>
+                        <span class="emoji-item">🤨</span>
+                        <span class="emoji-item">🧐</span>
+                        <span class="emoji-item">🤓</span>
+                        <span class="emoji-item">😎</span>
+                        <span class="emoji-item">🤩</span>
+                        <span class="emoji-item">🥳</span>
+                        <span class="emoji-item">😏</span>
+                        <span class="emoji-item">😒</span>
+                        <span class="emoji-item">😞</span>
+                        <span class="emoji-item">😔</span>
+                        <span class="emoji-item">😟</span>
+                        <span class="emoji-item">😕</span>
+                        <span class="emoji-item">🙁</span>
+                        <span class="emoji-item">☹️</span>
+                        <span class="emoji-item">😣</span>
+                        <span class="emoji-item">😖</span>
+                        <span class="emoji-item">😫</span>
+                        <span class="emoji-item">😩</span>
+                        <span class="emoji-item">🥺</span>
+                        <span class="emoji-item">😢</span>
+                        <span class="emoji-item">😭</span>
+                        <span class="emoji-item">😤</span>
+                        <span class="emoji-item">😠</span>
+                        <span class="emoji-item">😡</span>
+                        <span class="emoji-item">🤬</span>
+                        <span class="emoji-item">🤯</span>
+                        <span class="emoji-item">😳</span>
+                        <span class="emoji-item">🥵</span>
+                        <span class="emoji-item">🥶</span>
+                        <span class="emoji-item">😱</span>
+                        <span class="emoji-item">😨</span>
+                        <span class="emoji-item">😰</span>
+                        <span class="emoji-item">😥</span>
+                        <span class="emoji-item">😓</span>
+                        <span class="emoji-item">🤗</span>
+                        <span class="emoji-item">🤔</span>
+                        <span class="emoji-item">🤭</span>
+                        <span class="emoji-item">🤫</span>
+                        <span class="emoji-item">🤥</span>
+                        <span class="emoji-item">😶</span>
+                        <span class="emoji-item">😐</span>
+                        <span class="emoji-item">😑</span>
+                        <span class="emoji-item">😬</span>
+                        <span class="emoji-item">🙄</span>
+                        <span class="emoji-item">😯</span>
+                        <span class="emoji-item">😦</span>
+                        <span class="emoji-item">😧</span>
+                        <span class="emoji-item">😮</span>
+                        <span class="emoji-item">😲</span>
+                        <span class="emoji-item">🥱</span>
+                        <span class="emoji-item">😴</span>
+                        <span class="emoji-item">🤤</span>
+                        <span class="emoji-item">😪</span>
+                        <span class="emoji-item">😵</span>
+                        <span class="emoji-item">🤐</span>
+                        <span class="emoji-item">🥴</span>
+                        <span class="emoji-item">🤢</span>
+                        <span class="emoji-item">🤮</span>
+                        <span class="emoji-item">🤧</span>
+                        <span class="emoji-item">😷</span>
+                        <span class="emoji-item">🤒</span>
+                        <span class="emoji-item">🤕</span>
+                        <span class="emoji-item">🤑</span>
+                        <span class="emoji-item">🤠</span>
+                        <span class="emoji-item">😈</span>
+                        <span class="emoji-item">👿</span>
+                        <span class="emoji-item">👹</span>
+                        <span class="emoji-item">👺</span>
+                        <span class="emoji-item">🤡</span>
+                        <span class="emoji-item">💩</span>
+                        <span class="emoji-item">👻</span>
+                        <span class="emoji-item">💀</span>
+                        <span class="emoji-item">☠️</span>
+                        <span class="emoji-item">👽</span>
+                        <span class="emoji-item">👾</span>
+                        <span class="emoji-item">🤖</span>
+                        <span class="emoji-item">🎃</span>
+                        <span class="emoji-item">👋</span>
+                        <span class="emoji-item">🤚</span>
+                        <span class="emoji-item">🖐️</span>
+                        <span class="emoji-item">✋</span>
+                        <span class="emoji-item">🖖</span>
+                        <span class="emoji-item">👌</span>
+                        <span class="emoji-item">🤏</span>
+                        <span class="emoji-item">✌️</span>
+                        <span class="emoji-item">🤞</span>
+                        <span class="emoji-item">🤟</span>
+                        <span class="emoji-item">🤘</span>
+                        <span class="emoji-item">🤙</span>
+                        <span class="emoji-item">👈</span>
+                        <span class="emoji-item">👉</span>
+                        <span class="emoji-item">👆</span>
+                        <span class="emoji-item">🖕</span>
+                        <span class="emoji-item">👇</span>
+                        <span class="emoji-item">☝️</span>
+                        <span class="emoji-item">👍</span>
+                        <span class="emoji-item">👎</span>
+                        <span class="emoji-item">✊</span>
+                        <span class="emoji-item">👊</span>
+                        <span class="emoji-item">🤛</span>
+                        <span class="emoji-item">🤜</span>
+                        <span class="emoji-item">👏</span>
+                        <span class="emoji-item">🙌</span>
+                        <span class="emoji-item">👐</span>
+                        <span class="emoji-item">🤲</span>
+                        <span class="emoji-item">🤝</span>
+                        <span class="emoji-item">🙏</span>
+                        <span class="emoji-item">❤️</span>
+                        <span class="emoji-item">🧡</span>
+                        <span class="emoji-item">💛</span>
+                        <span class="emoji-item">💚</span>
+                        <span class="emoji-item">💙</span>
+                        <span class="emoji-item">💜</span>
+                        <span class="emoji-item">🖤</span>
+                        <span class="emoji-item">🤍</span>
+                        <span class="emoji-item">🤎</span>
+                        <span class="emoji-item">💔</span>
+                        <span class="emoji-item">❣️</span>
+                        <span class="emoji-item">💕</span>
+                        <span class="emoji-item">💞</span>
+                        <span class="emoji-item">💓</span>
+                        <span class="emoji-item">💗</span>
+                        <span class="emoji-item">💖</span>
+                        <span class="emoji-item">💘</span>
+                        <span class="emoji-item">💝</span>
+                        <span class="emoji-item">💟</span>
+                        <span class="emoji-item">♠️</span>
+                        <span class="emoji-item">♥️</span>
+                        <span class="emoji-item">♦️</span>
+                        <span class="emoji-item">♣️</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Microphone Selection Panel -->
+            <div id="mic-panel" class="settings-panel hidden">
+                <div class="panel-header">
+                    <h3>Select Microphone</h3>
+                    <button id="close-mic-panel" class="close-btn">×</button>
+                </div>
+                <div class="mic-list">
+                    <div class="loading">Loading microphones...</div>
+                </div>
+            </div>
+
+            <!-- Camera Filters Panel -->
+            <div id="filters-panel" class="settings-panel hidden">
+                <div class="panel-header">
+                    <h3>Camera Filters</h3>
+                    <button id="close-filters-panel" class="close-btn">
+                        ×
+                    </button>
+                </div>
+                <div class="filter-controls">
+                    <div class="filter-group">
+                        <label for="brightness-slider">Brightness</label>
+                        <input
+                            type="range"
+                            id="brightness-slider"
+                            min="0.5"
+                            max="2"
+                            step="0.1"
+                            value="1"
+                        />
+                        <span id="brightness-value">100%</span>
+                    </div>
+                    <div class="filter-group">
+                        <label for="contrast-slider">Contrast</label>
+                        <input
+                            type="range"
+                            id="contrast-slider"
+                            min="0.5"
+                            max="2"
+                            step="0.1"
+                            value="1"
+                        />
+                        <span id="contrast-value">100%</span>
+                    </div>
+                    <div class="filter-group">
+                        <label for="saturation-slider">Saturation</label>
+                        <input
+                            type="range"
+                            id="saturation-slider"
+                            min="0"
+                            max="2"
+                            step="0.1"
+                            value="1"
+                        />
+                        <span id="saturation-value">100%</span>
+                    </div>
+                    <div class="filter-group">
+                        <label for="blur-slider">Blur</label>
+                        <input
+                            type="range"
+                            id="blur-slider"
+                            min="0"
+                            max="5"
+                            step="0.1"
+                            value="0"
+                        />
+                        <span id="blur-value">0px</span>
+                    </div>
+                    <div class="filter-group">
+                        <label for="sepia-slider">Sepia</label>
+                        <input
+                            type="range"
+                            id="sepia-slider"
+                            min="0"
+                            max="1"
+                            step="0.1"
+                            value="0"
+                        />
+                        <span id="sepia-value">0%</span>
+                    </div>
+                    <div class="filter-group">
+                        <label for="hue-slider">Hue Rotate</label>
+                        <input
+                            type="range"
+                            id="hue-slider"
+                            min="0"
+                            max="360"
+                            step="10"
+                            value="0"
+                        />
+                        <span id="hue-value">0°</span>
+                    </div>
+                    <div class="filter-actions">
+                        <button id="reset-filters">Reset All</button>
+                        <button id="apply-filters">Apply</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Toggle Chat Button -->
+            <button
+                id="toggle-chat"
+                class="toggle-chat-btn"
+                title="Toggle Chat"
+            >
+                <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                >
+                    <path
+                        d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    />
+                </svg>
+            </button>
+        </div>
+
+        <!-- Scripts -->
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="js/app.js"></script>
+    </body>
+</html>
